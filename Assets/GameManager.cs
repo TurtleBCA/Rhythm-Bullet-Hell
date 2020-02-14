@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour {
 	public GameObject player;
@@ -13,11 +15,13 @@ public class GameManager : MonoBehaviour {
 	public static float yMax;
 	public static float xMax;
 
+	public TextMeshProUGUI scoreText;
+
 	private void Start() {
 		yMax = camera.orthographicSize;
 		xMax = yMax * Screen.width / Screen.height;
-		
-		print(yMax + " " + xMax);
+
+		scoreText.text = "Hits: " + hitCount;
 	}
 
 	private void Update() {
@@ -29,6 +33,7 @@ public class GameManager : MonoBehaviour {
 			playerController.isInvincible = true;
 			invincibleStartTime = Time.time;
 			hitCount++;
+			scoreText.text = "Hits: " + hitCount;
 		}
 	}
 }
