@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
+using Quaternion = UnityEngine.Quaternion;
+using Vector2 = UnityEngine.Vector2;
 
 public class BulletController : MonoBehaviour {
     public float birthTime;
@@ -55,6 +58,13 @@ public class BulletController : MonoBehaviour {
                     transform.rotation = Quaternion.Euler(0f, 0f, offset * Mathf.Rad2Deg);
                     transform.position = startPosition + (TimeManager.SongPosition - (birthTime + TimeManager.BeatDuration*4)) * 3*speed * (Vector2)transform.right;
                 }
+            },
+            (speed, intensity, offset) => {
+                float t = TimeManager.SongPosition - birthTime;
+                transform.position = startPosition + Mathf.Sin(t) * Mathf.Cos(t * speed + offset) * intensity *
+                                     (Vector2) transform.right +
+                                     Mathf.Sin(t) * Mathf.Sin(t * speed + offset) * intensity * 
+                                     (Vector2) transform.up;
             }
         };
     }

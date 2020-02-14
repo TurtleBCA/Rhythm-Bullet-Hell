@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EventManager : MonoBehaviour {
     private float lastSpawned1;
@@ -34,6 +36,11 @@ public class EventManager : MonoBehaviour {
     private Vector2 startLerp;
 
     private float lastSpawned10;
+
+    private float segment11Start;
+    private bool spawnedFirstRing;
+    private bool spawnedSecondRing;
+    private float lastSpawned11;
 
     void Update() {
         if (TimeManager.SongPosition > lastSpawned1 + TimeManager.BeatDuration / 2 && TimeManager.measure <= 27) {
@@ -257,6 +264,97 @@ public class EventManager : MonoBehaviour {
                 
                 lastSpawned10 = TimeManager.SongPosition;
             }
+        }
+
+        if (TimeManager.measure >= 53 && TimeManager.measure <= 60) {
+            if (segment11Start == 0) {
+                segment11Start = TimeManager.SongPosition;
+            }
+            
+            if (!spawnedFirstRing && TimeManager.measure == 53 && TimeManager.beat == 1) {
+                for (int i = 0; i < 8; i++) {
+                    BulletManager.SpawnBullet(Vector2.zero, Quaternion.identity,
+                        6, 2*Mathf.PI/(TimeManager.BeatDuration*4), 2, i*Mathf.PI/4);
+                }
+
+                spawnedFirstRing = true;
+            }
+            
+            if (!spawnedSecondRing && TimeManager.measure == 53 && TimeManager.beat == 2) {
+                for (int i = 0; i < 8; i++) {
+                    BulletManager.SpawnBullet(Vector2.zero, Quaternion.identity,
+                        6, -2*Mathf.PI/(TimeManager.BeatDuration*4), 2, i*Mathf.PI/4);
+                }
+
+                spawnedSecondRing = true;
+            }
+
+            float period;
+            float t = TimeManager.SongPosition - segment11Start;
+            Quaternion rotation;
+            if (TimeManager.measure == 53) {
+                period = TimeManager.BeatDuration * 8;
+                rotation = Quaternion.Euler(0f, 0f, 
+                               -180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            } else if (TimeManager.measure == 54) {
+                period = TimeManager.BeatDuration * 8;
+                rotation = Quaternion.Euler(0f, 0f, 
+                    180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            } else if (TimeManager.measure == 55 && TimeManager.beat >= 1 && TimeManager.beat >= 2) {
+                period = TimeManager.BeatDuration * 4;
+                rotation = Quaternion.Euler(0f, 0f, 
+                    -180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            } else if (TimeManager.measure == 55 && TimeManager.beat >= 3 && TimeManager.beat >= 4) {
+                period = TimeManager.BeatDuration * 4;
+                rotation = Quaternion.Euler(0f, 0f, 
+                    180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            } else if (TimeManager.measure == 56) {
+                period = TimeManager.BeatDuration * 8;
+                rotation = Quaternion.Euler(0f, 0f, 
+                    -180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            } else if (TimeManager.measure == 57 && TimeManager.beat >= 1 && TimeManager.beat <= 2) {
+                period = TimeManager.BeatDuration * 4;
+                rotation = Quaternion.Euler(0f, 0f, 
+                    180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            } else if (TimeManager.measure == 57 && TimeManager.beat >= 3 && TimeManager.beat <= 4) {
+                period = TimeManager.BeatDuration * 4;
+                rotation = Quaternion.Euler(0f, 0f, 
+                    -180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            } else if (TimeManager.measure == 58 && TimeManager.beat >= 1 && TimeManager.beat <= 2) {
+                period = TimeManager.BeatDuration * 4;
+                rotation = Quaternion.Euler(0f, 0f, 
+                    180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            } else if (TimeManager.measure == 58 && TimeManager.beat >= 3 && TimeManager.beat <= 4) {
+                period = TimeManager.BeatDuration * 4;
+                rotation = Quaternion.Euler(0f, 0f, 
+                    -180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            } else if (TimeManager.measure == 58 && TimeManager.beat == 1) {
+                period = TimeManager.BeatDuration * 2;
+                rotation = Quaternion.Euler(0f, 0f, 
+                    180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            } else if (TimeManager.measure == 58 && TimeManager.beat == 2) {
+                period = TimeManager.BeatDuration * 2;
+                rotation = Quaternion.Euler(0f, 0f, 
+                    -180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            } else if (TimeManager.measure == 58 && TimeManager.beat == 3) {
+                period = TimeManager.BeatDuration * 2;
+                rotation = Quaternion.Euler(0f, 0f, 
+                    180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            } else if (TimeManager.measure == 58 && TimeManager.beat == 4) {
+                period = TimeManager.BeatDuration * 2;
+                rotation = Quaternion.Euler(0f, 0f, 
+                    -180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            } else {
+                period = TimeManager.BeatDuration;
+                rotation = Quaternion.Euler(0f, 0f, 
+                    180 * Mathf.Cos(2 * Mathf.PI * t / period) + 180);
+            }
+
+            if (TimeManager.SongPosition >= lastSpawned11 + TimeManager.BeatDuration / 4) {
+                BulletManager.SpawnBurst(Vector2.zero, 4, rotation, 1, 5f, 1, 0f);
+                lastSpawned11 = TimeManager.SongPosition;
+            }
+
         }
     }
 }
